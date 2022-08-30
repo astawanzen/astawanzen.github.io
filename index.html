@@ -229,14 +229,29 @@
         </div>
         <div class="row justify-content-center">
           <div class="col-md-6">
-            <form>
+            <div
+              class="alert alert-success alert-dismissible fade show d-none my-alert"
+              role="alert"
+            >
+              <strong>Thank You</strong> your messages was send!
+              <button
+                type="button"
+                class="close"
+                data-dismiss="alert"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form name="zen-contact-form">
               <div class="mb-3">
-                <label for="name" class="form-label">Your name</label>
+                <label for="name" class="form-label">Name</label>
                 <input
                   type="text"
                   class="form-control"
                   id="name"
                   aria-describedby="name"
+                  name="name"
                 />
               </div>
 
@@ -247,20 +262,36 @@
                   class="form-control"
                   id="email"
                   aria-describedby="email"
+                  name="email"
                 />
               </div>
               <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label"
-                  >Example textarea</label
+                  >Message</label
                 >
                 <textarea
                   class="form-control"
                   id="exampleFormControlTextarea1"
                   rows="3"
+                  name="message"
                 ></textarea>
               </div>
 
-              <button type="submit" class="btn btn-succes">Submit</button>
+              <button type="submit" class="btn btn-primary btn-submit">
+                Submit
+              </button>
+              <button
+                class="btn btn-primary btn-loading d-none"
+                type="button"
+                disabled
+              >
+                <span
+                  class="spinner-grow spinner-grow-sm"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+                Loading...
+              </button>
             </form>
           </div>
         </div>
@@ -288,5 +319,30 @@
       integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
       crossorigin="anonymous"
     ></script>
+
+    <script>
+      const scriptURL =
+        "https://script.google.com/macros/s/AKfycbwuGhpBWPyziTAHPl5LhfUSOamOSn8GhegI3QoMZuzGIKiDn_HctGJTt7HIvGPcAkog/exec";
+      const form = document.forms["zen-contact-form"];
+
+      const btnSubmit = document.querySelector(".btn-submit");
+      const btnLoading = document.querySelector(".btn-loading");
+      const myAlert = document.querySelector(".my-alert");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        btnLoading.classList.toggle("d-none");
+        btnSubmit.classList.toggle("d-none");
+        fetch(scriptURL, { method: "POST", body: new FormData(form) })
+          .then((response) => {
+            btnLoading.classList.toggle("d-none");
+            btnSubmit.classList.toggle("d-none");
+            myAlert.classList.toggle('d-none');
+            form.reset();
+            console.log("Success!", response);
+          })
+          .catch((error) => console.error("Error!", error.message));
+      });
+    </script>
   </body>
 </html>
